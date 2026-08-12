@@ -1,0 +1,1304 @@
+/* =====================================================================
+   Generator Dashboard BJDPL — Wilayah
+   Gaya visual mengikuti "DOKUMENTASI_DASHBOARD_TEMPLATE.md"
+   (pola Dashboard Monitoring PROAKTIF): palet forest + gold + krem,
+   font Sora (display) + Inter (body), kartu radius besar, navbar gelap,
+   hero radial gradient, section gelap/terang berselang.
+
+   PENTING: semua aturan FUNGSIONAL print dipertahankan apa adanya
+   (teknik visibility + #dash-print-area, @page legal landscape,
+   print-page-break, table-layout:fixed, lebar <col> pivot, mode
+   print-table-only). Hanya warna/font/radius yang mengikuti tema baru.
+   ===================================================================== */
+
+/* ---------------------------------------------------------------------
+   1. Design tokens
+   --------------------------------------------------------------------- */
+:root {
+  --ink: #0B1F16;
+  --forest: #00573F;
+  --forest-2: #0C8B5E;
+  --gold: #C79A3B;
+  --gold-light: #E8C874;
+  --cream: #F6F2E7;
+  --paper: #FCFAF5;
+  --line: rgba(11, 31, 22, 0.10);
+  --line-light: rgba(246, 242, 231, 0.14);
+
+  --font-display: "Sora", sans-serif;
+  --font-body: "Inter", sans-serif;
+
+  --ease: cubic-bezier(.22, 1, .36, 1);
+
+  --r-lg: 20px;
+  --r-md: 14px;
+  --r-sm: 10px;
+
+  --shadow-1: 0 1px 2px rgba(11, 31, 22, 0.06), 0 8px 24px -12px rgba(11, 31, 22, 0.18);
+  --shadow-2: 0 2px 4px rgba(11, 31, 22, 0.08), 0 18px 40px -16px rgba(11, 31, 22, 0.28);
+
+  --maxw: 1180px;
+}
+
+/* ---------------------------------------------------------------------
+   2. Base / reset
+   --------------------------------------------------------------------- */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--ink);
+  background: var(--cream);
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.55;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+/* Tekstur noise halus (grain), mengikuti template — pointer-events none */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.035;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+}
+
+/* ---------------------------------------------------------------------
+   3. Layout: navbar, hero, section, footer
+   --------------------------------------------------------------------- */
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.app-main {
+  flex: 1;
+}
+
+.app-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(11, 31, 22, 0.88);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border-bottom: 1px solid var(--line-light);
+}
+
+.app-nav-inner {
+  width: 100%;
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  cursor: default;
+}
+
+.brand-logo {
+  height: 40px;
+  width: auto;
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.brand-text strong {
+  font-family: var(--font-display);
+  color: var(--gold-light);
+  letter-spacing: 0.06em;
+  font-size: 0.95rem;
+}
+
+.brand-text small {
+  font-size: 0.7rem;
+  color: rgba(246, 242, 231, 0.7);
+}
+
+.page-hero {
+  background:
+    radial-gradient(1200px 500px at 85% -10%, rgba(12, 139, 94, 0.5), transparent 60%),
+    radial-gradient(900px 420px at 5% 10%, rgba(199, 154, 59, 0.35), transparent 55%),
+    var(--ink);
+  color: var(--cream);
+  border-bottom: 1px solid var(--line-light);
+}
+
+.page-hero-inner {
+  width: 100%;
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 44px 24px;
+}
+
+.page-hero h1 {
+  font-size: clamp(1.7rem, 4vw, 2.4rem);
+  margin-bottom: 10px;
+}
+
+.page-hero h1 .accent {
+  color: var(--gold-light);
+}
+
+.page-hero p {
+  color: rgba(246, 242, 231, 0.72);
+  max-width: 64ch;
+  font-size: 0.98rem;
+}
+
+.section-shell {
+  width: 100%;
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 40px 24px;
+}
+
+.section-light {
+  background: var(--paper);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.app-footer {
+  background: var(--ink);
+  color: rgba(246, 242, 231, 0.7);
+  border-top: 1px solid var(--line-light);
+}
+
+.app-footer-inner {
+  width: 100%;
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 28px 24px;
+}
+
+.footer-note {
+  font-size: 0.78rem;
+  color: rgba(246, 242, 231, 0.45);
+}
+
+/* ---------------------------------------------------------------------
+   4. Cards / panels
+   --------------------------------------------------------------------- */
+.panel-box {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-1);
+}
+
+.panel-box h2 {
+  margin-top: 0;
+  font-size: 1.05rem;
+  color: var(--forest);
+  letter-spacing: 0.02em;
+}
+
+.panel-box .hint,
+.hint {
+  color: rgba(11, 31, 22, 0.6);
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+
+.panel-box code,
+.hint code {
+  background: var(--cream);
+  padding: 1px 6px;
+  border-radius: 6px;
+  font-size: 12px;
+  color: var(--forest);
+  font-weight: 600;
+}
+
+/* ---------------------------------------------------------------------
+   5. Dropzone
+   --------------------------------------------------------------------- */
+.dropzone {
+  border: 2px dashed rgba(11, 31, 22, 0.28);
+  border-radius: var(--r-lg);
+  padding: 34px 24px;
+  text-align: center;
+  background: var(--paper);
+  cursor: pointer;
+  transition:
+    border-color 0.25s var(--ease),
+    background 0.25s var(--ease),
+    transform 0.25s var(--ease),
+    box-shadow 0.25s var(--ease);
+}
+
+.dropzone:hover {
+  border-color: var(--forest-2);
+  background: rgba(12, 139, 94, 0.04);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-1);
+}
+
+.dropzone:active {
+  transform: scale(0.99);
+}
+
+.dropzone.is-drag {
+  border-color: var(--gold);
+  background: rgba(199, 154, 59, 0.08);
+}
+
+.dropzone.has-file {
+  border-style: solid;
+  border-color: var(--forest-2);
+}
+
+.dropzone input {
+  display: none;
+}
+
+.dropzone .icon {
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+/* ---------------------------------------------------------------------
+   6. Buttons
+   --------------------------------------------------------------------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 18px;
+  border-radius: 999px;
+  border: 0;
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    transform 0.3s var(--ease),
+    box-shadow 0.3s var(--ease),
+    background 0.3s var(--ease);
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn-primary {
+  background: var(--forest);
+  color: var(--cream);
+  box-shadow: 0 6px 18px -8px rgba(11, 31, 22, 0.5);
+}
+
+.btn-primary:hover {
+  background: var(--forest-2);
+}
+
+.btn-secondary {
+  background: var(--paper);
+  color: var(--forest);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-1);
+}
+
+.btn-secondary:hover {
+  border-color: var(--forest-2);
+}
+
+.btn-gold {
+  background: var(--gold);
+  color: var(--ink);
+  box-shadow: 0 6px 18px -8px rgba(199, 154, 59, 0.7);
+}
+
+.btn-gold:hover {
+  background: var(--gold-light);
+}
+
+.btn-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+
+/* ---------------------------------------------------------------------
+   7. Validation banner
+   --------------------------------------------------------------------- */
+.validation-banner {
+  padding: 10px 14px;
+  border-radius: var(--r-sm);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.validation-ok {
+  background: rgba(12, 139, 94, 0.1);
+  color: var(--forest);
+  border: 1px solid rgba(12, 139, 94, 0.35);
+}
+
+.validation-warn {
+  background: rgba(199, 154, 59, 0.14);
+  color: #8a6410;
+  border: 1px solid rgba(199, 154, 59, 0.4);
+}
+
+/* ---------------------------------------------------------------------
+   8. Date chips (UploadManager)
+   --------------------------------------------------------------------- */
+.date-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.date-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(12, 139, 94, 0.08);
+  border: 1px solid var(--forest-2);
+  color: var(--forest);
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 5px 8px 5px 12px;
+  border-radius: 999px;
+}
+
+.date-chip-remove {
+  border: none;
+  background: rgba(11, 31, 22, 0.1);
+  color: var(--ink);
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 13px;
+  line-height: 1;
+}
+
+.date-chip-remove:hover {
+  background: #a33c2c;
+  color: #fff;
+}
+
+/* ---------------------------------------------------------------------
+   9. Filter bar (select custom)
+   --------------------------------------------------------------------- */
+.filter-bar {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+
+.filter-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 220px;
+}
+
+.filter-field label {
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--forest);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.filter-field select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding: 10px 38px 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  background-color: var(--paper);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%230B1F16' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 12px;
+  color: var(--forest);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: var(--shadow-1);
+  transition: border-color 0.25s var(--ease), box-shadow 0.25s var(--ease);
+}
+
+.filter-field select:focus {
+  outline: none;
+  border-color: var(--forest-2);
+  box-shadow: 0 0 0 3px rgba(12, 139, 94, 0.18);
+}
+
+/* =====================================================================
+   DASHBOARD
+   ===================================================================== */
+.dash-root {
+  background: transparent;
+  padding: 0;
+}
+
+.dash-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 22px;
+}
+
+.dash-logo {
+  height: 64px;
+  width: auto;
+}
+
+.dash-title-block {
+  text-align: center;
+  flex: 1;
+}
+
+.dash-title-block h1 {
+  margin: 0;
+  font-size: clamp(1.3rem, 2.4vw, 1.7rem);
+  letter-spacing: 0.02em;
+  color: var(--forest);
+  text-transform: uppercase;
+}
+
+.dash-aging-pill {
+  display: inline-block;
+  background: var(--forest);
+  color: var(--cream);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 5px 18px;
+  border-radius: 999px;
+  margin-top: 8px;
+}
+
+.dash-period {
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(11, 31, 22, 0.65);
+  margin-top: 6px;
+}
+
+.dash-badge {
+  background: var(--ink);
+  color: var(--cream);
+  text-align: center;
+  padding: 10px 16px;
+  border-radius: var(--r-md);
+  min-width: 170px;
+  border: 1px solid var(--line-light);
+  box-shadow: var(--shadow-1);
+}
+
+.dash-badge .label {
+  font-family: var(--font-display);
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+.dash-badge .value {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--gold-light);
+  margin-top: 2px;
+}
+
+/* ---- KPI cards ---- */
+.dash-kpi-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.dash-kpi-card {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  padding: 16px 18px;
+  border-top: 4px solid var(--forest);
+  box-shadow: var(--shadow-1);
+}
+
+.dash-kpi-card .kpi-title {
+  font-family: var(--font-display);
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: rgba(11, 31, 22, 0.55);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.dash-kpi-card .kpi-value {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--forest);
+  margin-top: 6px;
+  line-height: 1.25;
+  font-variant-numeric: tabular-nums;
+}
+
+.dash-kpi-card .kpi-sub {
+  font-size: 0.72rem;
+  color: rgba(11, 31, 22, 0.55);
+  margin-top: 4px;
+}
+
+/* ---- Panels ---- */
+.dash-panel-wide {
+  width: 100%;
+  margin-bottom: 18px;
+}
+
+.dash-bottom-row {
+  display: grid;
+  grid-template-columns: 1.1fr 1.4fr 1.1fr;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.dash-bottom-row-2 {
+  grid-template-columns: 1fr 1fr;
+}
+
+.dash-panel {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-1);
+}
+
+.dash-panel-title {
+  background: var(--forest);
+  color: var(--cream);
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 10px 12px;
+}
+
+.dash-panel-body {
+  padding: 18px;
+}
+
+.dash-donut-wrap {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.dash-donut {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+.dash-donut .hole {
+  width: 76px;
+  height: 76px;
+  background: var(--paper);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--forest);
+  font-variant-numeric: tabular-nums;
+}
+
+.dash-legend {
+  font-size: 11px;
+  line-height: 1.9;
+  color: rgba(11, 31, 22, 0.8);
+}
+
+.dash-legend .dot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 3px;
+  margin-right: 6px;
+}
+
+.dash-catatan-list {
+  font-size: 11.5px;
+  padding-left: 16px;
+  margin: 0;
+  line-height: 1.7;
+  color: rgba(11, 31, 22, 0.75);
+}
+
+/* ---- Table (gaya monitor-table) ---- */
+.dash-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--paper);
+  font-size: 0.82rem;
+  color: var(--ink);
+}
+
+.dash-table thead tr.top-row th {
+  background: var(--forest);
+  color: var(--cream);
+  padding: 10px 10px;
+  height: 38px;
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-align: center;
+  border: 1px solid var(--forest);
+}
+
+.dash-table thead tr.sub-row th {
+  background: var(--forest-2);
+  color: var(--cream);
+  padding: 6px 10px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-align: center;
+  border: 1px solid rgba(11, 31, 22, 0.3);
+}
+
+.dash-table thead tr.top-row th,
+.dash-table thead tr.sub-row th {
+  position: sticky;
+  z-index: 2;
+}
+
+.dash-table thead tr.top-row th {
+  top: 0;
+}
+
+.dash-table thead tr.sub-row th {
+  top: 38px;
+}
+
+.dash-table tbody td {
+  padding: 8px 10px;
+  text-align: right;
+  border: 1px solid var(--line);
+  white-space: nowrap;
+  background: var(--paper);
+  font-variant-numeric: tabular-nums;
+}
+
+.dash-table tbody td.upc-name {
+  text-align: left;
+  font-weight: 600;
+  color: var(--ink);
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+.dash-table tbody tr:nth-child(even) td {
+  background: #f7f8f4;
+}
+
+.dash-table tr.total-row td {
+  background: var(--gold);
+  font-weight: 800;
+  color: var(--ink);
+  border-color: rgba(199, 154, 59, 0.6);
+}
+
+/* Baris ringkasan outlet (mode pivot) -- dibedakan dari baris outlet biasa
+   dan dari baris TOTAL keseluruhan (gold) */
+tr.cabang-row td {
+  background: rgba(12, 139, 94, 0.07) !important;
+  font-weight: 700;
+  border-top: 1.5px solid var(--forest-2);
+}
+
+tr.outlet-nested-row td {
+  background: var(--paper);
+}
+
+td.outlet-nested-name {
+  padding-left: 24px !important;
+  font-weight: 400 !important;
+  color: var(--ink) !important;
+  font-size: 11.5px;
+}
+
+td.outlet-nested-name::before {
+  content: '\21B3';
+  margin-right: 6px;
+  color: rgba(11, 31, 22, 0.5);
+}
+
+/* ---- Outlet table: scrollable di layar, penuh saat export ---- */
+.outlet-table-scroll {
+  max-height: 380px;
+  overflow-y: auto;
+}
+
+/* ---- Table section (DetailTable) ---- */
+.dash-table-section {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-1);
+  margin-top: 4px;
+}
+
+.dash-table-section-header {
+  padding: 14px 18px;
+  background: var(--cream);
+  border-bottom: 1px solid var(--line);
+}
+
+.table-mode-toggle {
+  display: flex;
+  gap: 18px;
+}
+
+.table-mode-toggle label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: rgba(11, 31, 22, 0.55);
+  cursor: pointer;
+}
+
+.table-mode-toggle label.active {
+  color: var(--forest);
+}
+
+.table-mode-toggle input {
+  cursor: pointer;
+  accent-color: var(--forest);
+}
+
+.sortable-th {
+  cursor: pointer;
+  user-select: none;
+}
+
+.sortable-th:hover {
+  background: var(--forest-2);
+}
+
+.sort-indicator {
+  font-size: 10px;
+  opacity: 0.9;
+}
+
+.sort-indicator-inactive {
+  opacity: 0.4;
+}
+
+/* ---- Detail table filter row ---- */
+.detail-table-filters {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.detail-filters-row {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+
+.detail-print-btn-row {
+  display: flex;
+}
+
+.filter-field-products {
+  width: 100%;
+}
+
+.product-filter-actions {
+  font-weight: 400;
+  margin-left: 8px;
+  color: rgba(11, 31, 22, 0.5);
+}
+
+.link-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--forest-2);
+  font-size: 11.5px;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.link-btn:hover {
+  color: var(--forest);
+}
+
+.product-checklist {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  max-height: 110px;
+  overflow-y: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  padding: 8px 10px;
+  background: var(--paper);
+}
+
+.product-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: var(--ink);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.product-checkbox input {
+  cursor: pointer;
+  accent-color: var(--forest);
+}
+
+.detail-table td.delta-up {
+  color: var(--forest-2);
+  font-weight: 700;
+}
+
+.detail-table td.delta-down {
+  color: #a33c2c;
+  font-weight: 700;
+}
+
+/* ---- Line chart ---- */
+.linechart-wrap {
+  position: relative;
+}
+
+.linechart-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.linechart-grid {
+  stroke: var(--line);
+  stroke-width: 1;
+}
+
+.linechart-xlabel {
+  font-size: 9.5px;
+  fill: rgba(11, 31, 22, 0.55);
+  font-family: var(--font-body);
+}
+
+.linechart-tooltip {
+  position: absolute;
+  transform: translate(-50%, -120%);
+  background: var(--ink);
+  color: var(--cream);
+  padding: 8px 12px;
+  border-radius: var(--r-sm);
+  font-size: 11px;
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: var(--shadow-2);
+}
+
+.linechart-tooltip-label {
+  font-size: 10px;
+  opacity: 0.75;
+}
+
+.linechart-tooltip-value {
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.chart-empty {
+  color: rgba(11, 31, 22, 0.55);
+  font-size: 12.5px;
+  padding: 20px 0;
+  text-align: center;
+}
+
+/* ---- Top list (bar list, gaya progress-fill template) ---- */
+.toplist {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.toplist-row {
+  display: grid;
+  grid-template-columns: 1fr 2fr auto;
+  align-items: center;
+  gap: 12px;
+}
+
+.toplist-label {
+  font-size: 11.5px;
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+.toplist-bar-track {
+  background: var(--cream);
+  border-radius: 999px;
+  height: 10px;
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+.toplist-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.6s var(--ease);
+}
+
+.toplist-value {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--forest);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* =====================================================================
+   PRINT RULES
+   Semua aturan fungsional dipertahankan persis dari versi sebelumnya
+   (teknik visibility + #dash-print-area, @page legal landscape, print
+   page break, table-layout:fixed, lebar <col> pivot, mode print-table-
+   only). Hanya palet warna cetak yang disesuaikan ke tema terang
+   (hemat tinta) ala template.
+   ===================================================================== */
+@page {
+  size: legal landscape;
+  margin: 7mm;
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  body {
+    background: #fff;
+    color: #000;
+  }
+
+  body::after {
+    display: none !important;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  #dash-print-area,
+  #dash-print-area * {
+    visibility: visible;
+  }
+
+  #dash-print-area {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Kartu & panel dijadikan terang (hemat tinta) */
+  .dash-kpi-card,
+  .dash-panel,
+  .dash-table-section,
+  .panel-box {
+    background: #fff;
+    border-color: #ddd;
+    box-shadow: none;
+  }
+
+  .dash-kpi-card {
+    border-top: 4px solid #00573F;
+  }
+
+  .dash-panel-title {
+    background: #00573F;
+    color: #fff;
+  }
+
+  .dash-table thead tr.top-row th {
+    background: #00573F;
+    color: #fff;
+  }
+
+  .dash-table thead tr.sub-row th {
+    background: #0C8B5E;
+    color: #fff;
+  }
+
+  .dash-table tbody td {
+    background: #fff;
+    color: #000;
+    border-color: #ddd;
+  }
+
+  .dash-table tbody tr:nth-child(even) td {
+    background: #f6f2e7;
+  }
+
+  .dash-table tbody td.upc-name {
+    color: #000;
+  }
+
+  .dash-table tr.total-row td {
+    background: #C79A3B;
+    color: #000;
+    border-color: #b98a2c;
+  }
+
+  tr.cabang-row td {
+    background: #eef3ee !important;
+  }
+
+  .dash-table-section-header {
+    background: #f6f2e7;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .dash-badge {
+    background: #0B1F16;
+    color: #F6F2E7;
+    border: 1px solid #ddd;
+  }
+
+  .dash-badge .value {
+    color: #E8C874;
+  }
+
+  .dash-donut .hole {
+    background: #fff;
+    color: #0B1F16;
+  }
+
+  .dash-legend {
+    color: #000;
+  }
+
+  .linechart-tooltip {
+    background: #0B1F16;
+    color: #fff;
+  }
+
+  .chart-empty,
+  .dash-period,
+  .hint,
+  .dash-kpi-card .kpi-title,
+  .dash-kpi-card .kpi-sub {
+    color: #000;
+  }
+
+  .kpi-value {
+    color: #00573F;
+  }
+
+  /* Fungsi print tetap dipertahankan apa adanya */
+  .dash-panel,
+  .dash-kpi-card {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* Bagian tabel rincian per outlet & produk selalu mulai di halaman baru,
+     supaya tidak menyatu / tumpang tindih dengan panel-panel ringkasan. */
+  .print-page-break {
+    break-before: page;
+    page-break-before: always;
+  }
+
+  /* Tabel rincian boleh mengalir antar halaman (header berulang tiap
+     halaman); yang dijaga adalah tiap barisnya utuh. */
+  .dash-table-section {
+    break-inside: auto;
+    page-break-inside: auto;
+  }
+
+  .dash-table tr {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .dash-table thead {
+    display: table-header-group;
+  }
+
+  .outlet-table-scroll {
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  .detail-table-filters {
+    display: none !important;
+  }
+
+  /* Mode "Cetak Tabel" (print-table-only) */
+  body.print-table-only .dash-header,
+  body.print-table-only .dash-kpi-row,
+  body.print-table-only .dash-bottom-row,
+  body.print-table-only .dash-panel-wide {
+    display: none !important;
+  }
+
+  body.print-table-only .print-page-break {
+    break-before: auto !important;
+    page-break-before: auto !important;
+  }
+
+  body.print-table-only .dash-root {
+    padding-top: 0;
+  }
+
+  /* table-layout:fixed + width:100% MEMAKSA tabel selalu pas di lebar
+     halaman -- kolom jadi lebih sempit & teks boleh melipat, tapi tidak
+     pernah ada kolom yang hilang/terpotong. */
+  .dash-table {
+    table-layout: fixed;
+    width: 100%;
+    font-size: 9px;
+  }
+
+  .dash-table th,
+  .dash-table td {
+    padding: 4px 3px;
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+
+  /* Tabel pivot punya 12 kolom (Outlet, Product, 7 sub-kolom Umur BJDPL,
+     BJDPL hari ini, BJDPL H-1, Delta). Lebar kolom diatur lewat
+     <colgroup>/<col> (bukan nth-child), karena header tabel memakai
+     rowspan/colspan (UMUR BJDPL membentang 7 kolom) -- pada
+     table-layout: fixed, browser menghitung lebar kolom dari BARIS
+     PERTAMA <thead>, jadi lebar via nth-child pada <td> bodi bisa
+     diabaikan dan menyebabkan kolom Umur BJDPL salah hitung lebar. <col>
+     eksplisit selalu jadi acuan utama. */
+  .pivot-table {
+    font-size: 7.6px;
+  }
+
+  .pivot-table th,
+  .pivot-table td {
+    padding: 3px 2px;
+  }
+
+  .pivot-table col.col-outlet {
+    width: 13%;
+  }
+
+  .pivot-table col.col-product {
+    width: 13%;
+  }
+
+  .pivot-table col.col-bucket {
+    width: 7%;
+  }
+
+  .pivot-table col.col-total {
+    width: 8.33%;
+  }
+
+  .pivot-table th:nth-child(-n+2),
+  .pivot-table td:nth-child(-n+2) {
+    white-space: normal;
+    word-break: normal;
+    overflow-wrap: break-word;
+  }
+
+  /* Kolom-kolom angka: dipaksa 1 baris selama muat; kalaupun ada angka
+     yang lebih panjang dari perkiraan, word-break jadi jaring pengaman
+     terakhir -- teks melipat ke baris berikutnya, BUKAN meluber/tumpang
+     tindih ke kolom sebelah. */
+  .pivot-table th:nth-child(n+3),
+  .pivot-table td:nth-child(n+3) {
+    white-space: normal;
+    word-break: break-all;
+    overflow-wrap: anywhere;
+    text-align: center;
+  }
+
+  /* Header sub-kolom Umur BJDPL (1-15, 16-30, dst.) dipaksa 1 baris supaya
+     rapi sejajar dengan angka di bawahnya. */
+  .pivot-table .sub-row th {
+    white-space: nowrap;
+    word-break: normal;
+    font-size: 7.6px;
+  }
+}
