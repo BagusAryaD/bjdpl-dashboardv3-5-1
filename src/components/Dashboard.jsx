@@ -3,7 +3,7 @@ import {
   filterRows, aggregateByOutlet, detectActiveBuckets, aggregateByBucket,
   grandTotal, topProducts, topMtmOutlets, trendByDay,
 } from '../utils/rawAggregate';
-import { formatRupiah, formatPercent, formatDateID, formatDayMonthID } from '../utils/format';
+import { formatRupiah, formatDateID, formatDayMonthID } from '../utils/format';
 import { printWithTitle } from '../utils/printTitle';
 import LineChart from './LineChart';
 import TopList from './TopList';
@@ -43,11 +43,6 @@ export default function Dashboard({ dataByDate, filters }) {
     wilayahName, activeBuckets, bucketTotals, total,
     outletTerbesar, top5Produk, top5Mtm, trend,
   } = data;
-
-  const gradientStops = buildConicGradient(activeBuckets, bucketTotals, total.bjdpl);
-  const biggestPct = activeBuckets.length > 0
-    ? Math.max(...activeBuckets.map((b) => (total.bjdpl > 0 ? (bucketTotals[b.key].bjdpl / total.bjdpl) * 100 : 0)))
-    : 0;
 
   const agingPoints = activeBuckets.map((b) => ({
     label: b.label.replace(' HARI', ''),
@@ -139,42 +134,10 @@ ${inner}
             </div>
           </div>
 
-          <div className="dash-bottom-row">
-            <div className="dash-panel">
-              <div className="dash-panel-title">KOMPOSISI BJDPL PER MASA HARI</div>
-              <div className="dash-panel-body">
-                <div className="dash-donut-wrap">
-                  <div className="dash-donut" style={{ background: `conic-gradient(${gradientStops})` }}>
-                    <div className="hole">{formatPercent(biggestPct, 2)}%</div>
-                  </div>
-                  <div className="dash-legend">
-                    {activeBuckets.map((b) => (
-                      <div key={b.key}>
-                        <span className="dot" style={{ background: b.color }}></span>
-                        {b.label}&nbsp; {formatRupiah(bucketTotals[b.key].bjdpl)} (
-                        {formatPercent(total.bjdpl > 0 ? (bucketTotals[b.key].bjdpl / total.bjdpl) * 100 : 0)}%)
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="dash-panel">
-              <div className="dash-panel-title">BESAR BJDPL PER UMUR (AGING)</div>
-              <div className="dash-panel-body">
-                <LineChart points={agingPoints} color="#00573F" valueFormatter={formatRupiah} />
-              </div>
-            </div>
-
-            <div className="dash-panel">
-              <div className="dash-panel-title">CATATAN</div>
-              <div className="dash-panel-body">
-                <ul className="dash-catatan-list">
-                  <li>Data berdasarkan umur tunggakan (aging) BJDPL per {formatDateID(filters.tanggal)}.</li>
-                  <li>Informasi ini digunakan sebagai monitoring dan bahan tindak lanjut penagihan.</li>
-                </ul>
-              </div>
+          <div className="dash-panel dash-panel-wide">
+            <div className="dash-panel-title">BESAR BJDPL PER UMUR (AGING)</div>
+            <div className="dash-panel-body">
+              <LineChart points={agingPoints} color="#00573F" valueFormatter={formatRupiah} />
             </div>
           </div>
 
@@ -221,20 +184,6 @@ function agingRangeLabel(activeBuckets) {
   const last = activeBuckets[activeBuckets.length - 1].label.replace(' HARI', '');
   if (activeBuckets.length === 1) return `${first} HARI`;
   return `${first} s.d. ${last} HARI`;
-}
-
-function buildConicGradient(activeBuckets, bucketTotals, grandTotalBjdpl) {
-  if (grandTotalBjdpl <= 0 || activeBuckets.length === 0) return '#e2e5e0 0% 100%';
-  let acc = 0;
-  const parts = [];
-  for (const b of activeBuckets) {
-    const pct = (bucketTotals[b.key].bjdpl / grandTotalBjdpl) * 100;
-    const start = acc;
-    const end = acc + pct;
-    parts.push(`${b.color} ${start.toFixed(2)}% ${end.toFixed(2)}%`);
-    acc = end;
-  }
-  return parts.join(', ');
 }
 
 function escapeHtml(s) {

@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import { parseRawFile } from '../utils/rawParser';
 import { formatDateID } from '../utils/format';
+import { generateDemoData } from '../utils/generateDemoData';
 
 export default function UploadManager({ dataByDate, setDataByDate }) {
   const inputRef = useRef(null);
@@ -84,6 +85,16 @@ export default function UploadManager({ dataByDate, setDataByDate }) {
           multiple
           onChange={(e) => handleFiles(e.target.files)}
         />
+      </div>
+
+      <div style={{ marginTop: 12, textAlign: 'center' }}>
+        <span className="hint" style={{ marginRight: 8 }}>atau</span>
+        <button
+          className="btn btn-primary"
+          onClick={() => setDataByDate(generateDemoData())}
+        >
+          &#10024; Muat Data Demo
+        </button>
       </div>
 
       {loading && <div className="hint" style={{ marginTop: 10 }}>Memproses file&hellip;</div>}
